@@ -4,6 +4,8 @@ import connectDB from '../db/mongodbSetup.js'
 import authRoutes from '../routes/authRoutes.js'
 import rateLimit from 'express-rate-limit'
 import cookieParser from 'cookie-parser'
+import multer from 'multer';
+import path from 'path'
 dotenv.config()
 const port = process.env.PORT || 8001
 
@@ -18,6 +20,24 @@ const limiter = rateLimit({
     message:{
         success:false,
         message:"too many requests are made, try after some time"
+    }
+})
+
+const storage = multer.diskStorage({
+    destination:"./uploads",
+    filename:function(req, file, cb){
+        cb(null,file.fieldname + "-" + Date.now() + path.extname(file.originalname));
+    }
+})
+
+const upload = multer({
+    storage:storage,
+    limits:{fileSize:1500000},
+    fileFilter:(req, file, cb) => {
+        if(file.mimetype !== "application/pdf"){
+            return cb(new Error("only pdfs allowed"));
+        }
+        cb(null, true);
     }
 })
 
@@ -36,6 +56,13 @@ app.get("/health",(req,res) =>{
 res.status(200).json({ status: "OK" });});
 
 app.use("/auth",authRoutes);
+
+app.post("/upload", upload.single("resume"), (req, res) => {
+    console.log(req.file);
+    res.status(200).json({
+        message:"file loaded"
+    })
+})
 
 
 /* ***************************    404 handler    **************************************/
@@ -72,6 +99,14 @@ app.use((err, req, res, next) => {
         statusCode = 409;
         message = "Resource already exists";
     }
+    if (err.name === "MulterError") {
+        if (err.code === "LIMIT_FILE_SIZE") {
+            return res.status(400).json({
+            error: "File too large (max 1MB)"
+            });
+        }
+    }
+
 
     res.status(statusCode).json({ error: message });
 })
