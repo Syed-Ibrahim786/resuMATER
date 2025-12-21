@@ -1,5 +1,5 @@
 import express from 'express'
-import { uploadController } from "../controller/authController.js";
+import { uploadController } from '../controller/uploadController.js';
 
 const uploadRoutes = express.Router();
 
