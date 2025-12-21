@@ -6,8 +6,11 @@ import rateLimit from 'express-rate-limit'
 import cookieParser from 'cookie-parser'
 import multer from 'multer';
 import path from 'path'
+import uploadRoutes from '../routes/uploadRoutes.js'
 dotenv.config()
 const port = process.env.PORT || 8001
+
+
 
 
 
@@ -57,12 +60,7 @@ res.status(200).json({ status: "OK" });});
 
 app.use("/auth",authRoutes);
 
-app.post("/upload", upload.single("resume"), (req, res) => {
-    console.log(req.file);
-    res.status(200).json({
-        message:"file loaded"
-    })
-})
+app.use("/upload",upload.single("resume"), uploadRoutes)
 
 
 /* ***************************    404 handler    **************************************/
