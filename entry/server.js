@@ -6,6 +6,7 @@ import rateLimit from 'express-rate-limit'
 import cookieParser from 'cookie-parser'
 import multer from 'multer';
 import path from 'path'
+import cors from 'cors'
 import uploadRoutes from '../routes/uploadRoutes.js'
 dotenv.config()
 const port = process.env.PORT || 8001
@@ -45,6 +46,10 @@ const upload = multer({
 })
 
 /* *************************    global middleware   *****************************/
+app.use(cors({
+    origin:["http://localhost:5173","http://localhost:5174", process.env.PRODUCTION_FRONTEND_DOMAIN],
+    credentials:true
+}))
 app.use(limiter);
 app.use(express.json({limit:"10kb"}));
 app.use(cookieParser());
