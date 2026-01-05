@@ -34,7 +34,7 @@ export const loginController = asyncHandler(async (req, res) => {
     const existingUser = await Users.findOne({email:email}).select('+password +refreshToken');
 
     //no user found
-    if(existingUser === null){
+    if(!existingUser){
         res.status(401).json({
             message:"wrong email or password"
         });
@@ -90,13 +90,27 @@ export const refreshController = asyncHandler(async (req, res) => {
     console.log(refreshToken);
     const payload = verifyToken(refreshToken, process.env.SECRET_KEY);
 
-    const existingUser = await Users.findById(payload.id).select('+refreshToken').lean();
+    const existingUser = await Users.findById(payload.id).select('+refreshToken');
 
     if(!existingUser || existingUser.refreshToken !== refreshToken){
         return res.status(401).json({
-            message:"token expired"
+            message:"Unauthorized Access"
         })
     }
+
+    //refresh token rotation
+    const newRefreshToken = createToken({
+        id:existingUser._id,
+        name:existingUser.name}, "3m");
+    existingUser.refreshToken = newRefreshToken;
+    await existingUser.save();
+    res.cookie("refreshToken",newRefreshToken,{
+        httpOnly:true,
+        secure:process.env.NODE_ENV === "production",
+       
+        sameSite:"strict",
+        maxAge: 3 * 60 * 1000
+    })
 
     const access_token = createToken({id:existingUser._id}, "3m");
 
