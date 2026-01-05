@@ -31,10 +31,18 @@ export const uploadController = asyncHandler(async (req, res) => {
     
     Your task:
     - Compare the resume against the job description
-    - Calculate an ATS compatibility score from 0 to 100
+    - Calculate ATS compatibility score from 0 to 100
+    - provide 5 different scores against the given job description.
+    - first score denotes skillset score
+    - second score denotes project score
+    - third score denote keyword match score
+    - fourth score denotes experience match score
+    - fifth score denotes overall score
+    - provide section explaining why the score.
+    - finally give suggestions to improve the resume against the Job description to gain maximum overall score.
     - Provide clear, actionable feedback to improve the resume for this job
 
-    Scoring criteria:
+    Scoring criteria for overall score:
     - Skill match
     - Keyword overlap
     - Relevant experience
@@ -49,7 +57,12 @@ export const uploadController = asyncHandler(async (req, res) => {
     Generate the result as a raw JSON object. Do not include any text before 
     or after the JSON, and do not use \`\`\`json markdown or escape characters. The output must
     start immediately with the opening curly brace like below one:
-    {"score":number,"feedback":string}
+    {"skillScore":number,"projectScore":number,"keywordMatchScore":number,"experienceScore":number,"overallScore":number,"scoreExplanation":[{"scoreType":"Skills", "explanation":string},{"scoreType":"Projects", "explanation":string},{"scoreType":"keywordMatch", "explanation":string},{"scoreType":"experience", "explanation":string},{"scoreType":"Overall Score", "explanation":string}], "suggestions":string}
+    STRICT OUTPUT RULES:
+    - Output MUST be valid JSON
+    - Do NOT add new keys
+    - Do NOT rename keys
+    - Do NOT add explanations outside JSON
 
 
 

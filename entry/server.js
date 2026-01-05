@@ -100,7 +100,7 @@ app.use((err, req, res, next) => {
     // Mongo duplicate key
     if (err.code === 11000) {
         statusCode = 409;
-        message = "Resource already exists";
+        message = "Email or name already exist";
     }
     if (err.name === "MulterError") {
         if (err.code === "LIMIT_FILE_SIZE") {
