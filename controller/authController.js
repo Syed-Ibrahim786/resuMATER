@@ -53,11 +53,11 @@ export const loginController = asyncHandler(async (req, res) => {
      
     const access_token = createToken({
         id:existingUser._id
-    }, "1m");
+    }, "100m");
     const refreshToken = createToken({
         id:existingUser._id,
         name:existingUser.name
-    }, "3m");
+    }, "1d");
 
     existingUser.refreshToken = refreshToken;
     await existingUser.save();
@@ -67,7 +67,7 @@ export const loginController = asyncHandler(async (req, res) => {
         secure:process.env.NODE_ENV === "production",
        
         sameSite:"strict",
-        maxAge: 3 * 60 * 1000
+        maxAge: 24 * 60 * 60 * 1000
     })
 
 
@@ -101,7 +101,7 @@ export const refreshController = asyncHandler(async (req, res) => {
     //refresh token rotation
     const newRefreshToken = createToken({
         id:existingUser._id,
-        name:existingUser.name}, "3m");
+        name:existingUser.name}, "1d");
     existingUser.refreshToken = newRefreshToken;
     await existingUser.save();
     res.cookie("refreshToken",newRefreshToken,{
@@ -109,10 +109,10 @@ export const refreshController = asyncHandler(async (req, res) => {
         secure:process.env.NODE_ENV === "production",
        
         sameSite:"strict",
-        maxAge: 3 * 60 * 1000
+        maxAge: 24 * 60 * 60 * 1000
     })
 
-    const access_token = createToken({id:existingUser._id}, "3m");
+    const access_token = createToken({id:existingUser._id}, "100m");
 
     res.status(200).json({
         access_token:access_token
