@@ -18,6 +18,9 @@ const port = process.env.PORT || 8001
  
 const app = express()
 
+app.set("trust proxy", true); //since render use reverse proxy (default is false so express fail on proxy)
+
+
 const limiter = rateLimit({
     windowMs:1 * 60 * 1000,
     max:60,
