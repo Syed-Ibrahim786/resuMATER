@@ -3,6 +3,7 @@ import bcrypt from 'bcrypt'
 import createToken from "../utils/createToken.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import { verifyToken } from "../utils/verifyToken.js";
+import path from "path";
 
 /* ****************************** register ****************************** */
 
@@ -65,8 +66,8 @@ export const loginController = asyncHandler(async (req, res) => {
     res.cookie("refreshToken",refreshToken,{
         httpOnly:true,
         secure:process.env.NODE_ENV === "production",
-       
-        sameSite:"strict",
+        sameSite: "lax",
+        path: "/",
         maxAge: 24 * 60 * 60 * 1000
     })
 
@@ -83,11 +84,11 @@ export const refreshController = asyncHandler(async (req, res) => {
     const refreshToken = req.cookies.refreshToken;
 
     if(!refreshToken){
-        return res.status(400).json({
+        return res.status(401).json({
             message:"refresh token is missing"
         })
     }
-    console.log(refreshToken);
+    console.log("refresh",refreshToken);
     const payload = verifyToken(refreshToken, process.env.SECRET_KEY);
 
     const existingUser = await Users.findById(payload.id).select('+refreshToken');
@@ -107,13 +108,14 @@ export const refreshController = asyncHandler(async (req, res) => {
     res.cookie("refreshToken",newRefreshToken,{
         httpOnly:true,
         secure:process.env.NODE_ENV === "production",
-       
-        sameSite:"strict",
+       path:"/",
+        sameSite:"lax",
         maxAge: 24 * 60 * 60 * 1000
     })
 
     const access_token = createToken({id:existingUser._id}, "100m");
 
+    console.log("new access token  ", access_token)
     res.status(200).json({
         access_token:access_token
     })
@@ -132,7 +134,8 @@ export const logoutController = asyncHandler(async (req, res) => {
     return res.clearCookie("refreshToken",{
         httpOnly:true,
         secure: process.env.NODE_ENV === "production",
-        sameSite:"strict"
+        sameSite:"lax",
+        path:"/"
     }).status(200).json({
         message:"logged out"
     }); 
