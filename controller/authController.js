@@ -66,7 +66,7 @@ export const loginController = asyncHandler(async (req, res) => {
     res.cookie("refreshToken",refreshToken,{
         httpOnly:true,
         secure:process.env.NODE_ENV === "production",
-        sameSite: "lax",
+        sameSite: "none",
         path: "/",
         maxAge: 24 * 60 * 60 * 1000
     })
@@ -109,7 +109,7 @@ export const refreshController = asyncHandler(async (req, res) => {
         httpOnly:true,
         secure:process.env.NODE_ENV === "production",
        path:"/",
-        sameSite:"lax",
+        sameSite:"none",
         maxAge: 24 * 60 * 60 * 1000
     })
 
@@ -134,7 +134,7 @@ export const logoutController = asyncHandler(async (req, res) => {
     return res.clearCookie("refreshToken",{
         httpOnly:true,
         secure: process.env.NODE_ENV === "production",
-        sameSite:"lax",
+        sameSite:"none",
         path:"/"
     }).status(200).json({
         message:"logged out"
