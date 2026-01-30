@@ -38,7 +38,11 @@ export const uploadController = asyncHandler(async (req, res) => {
     - third score denote keyword match score
     - fourth score denotes experience match score
     - fifth score denotes overall score
+    - mention critical issues in resume
+    - mention minor issues in resume
+    - mention best things in resume
     - provide section explaining why the score.
+    - provide own resume content for every resume title under 'best suggestions' by refactoring provided resume by including necessary details against Provided job description and maintaining experience years for getting near 100% ats score or maximum ats score.
     - finally give suggestions to improve the resume against the Job description to gain maximum overall score.
     - Provide clear, actionable feedback to improve the resume for this job
 
@@ -57,7 +61,7 @@ export const uploadController = asyncHandler(async (req, res) => {
     Generate the result as a raw JSON object. Do not include any text before 
     or after the JSON, and do not use \`\`\`json markdown or escape characters. The output must
     start immediately with the opening curly brace like below one:
-    {"skillScore":number,"projectScore":number,"keywordMatchScore":number,"experienceScore":number,"overallScore":number,"scoreExplanation":[{"scoreType":"Skills", "explanation":string},{"scoreType":"Projects", "explanation":string},{"scoreType":"keywordMatch", "explanation":string},{"scoreType":"experience", "explanation":string},{"scoreType":"Overall Score", "explanation":string}], "suggestions":string}
+    {"skillScore":number,"projectScore":number,"keywordMatchScore":number,"experienceScore":number,"overallScore":number,"scoreExplanation":[{"scoreType":"Skills", "explanation":string},{"scoreType":"Projects", "explanation":string},{"scoreType":"keywordMatch", "explanation":string},{"scoreType":"experience", "explanation":string},{"scoreType":"Overall Score", "explanation":string}],"Best Suggestion":{"title":string, "title":string,...},"critical issues":string,"minor issues":string,"best things":string,suggestions":string}
     STRICT OUTPUT RULES:
     - Output MUST be valid JSON
     - Do NOT add new keys
